@@ -1,13 +1,26 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Recipe {
-  Recipe(
-      {required this.name, required this.description, required this.imagePath});
+  final String? name;
+  final String? description;
+  final String? imagePath;
 
-  final String name;
-  final String description;
-  final String imagePath;
+  Recipe({this.name, this.description, this.imagePath});
+
+  factory Recipe.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Recipe(
+        name: data?['name'],
+        description: data?['description'],
+        imagePath: data?['imagePath']);
+  }
 
   static List<Recipe> fetchRecipes() {
     const String loremIpsum =

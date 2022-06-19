@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1074312257034",
+    "project_id": "recipe-roulette-74944",
+    "storage_bucket": "recipe-roulette-74944.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074312257034:android:2df0122cdb009d8bd709f3",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1074312257034-np9h10opnks1o7d16165j4s7ii54a1ma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqq8KAeowDS6V1lR6fqNG9KkQg5b89InQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1074312257034-np9h10opnks1o7d16165j4s7ii54a1ma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
