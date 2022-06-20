@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/recipe.dart';
 import 'package:flutter_application_1/rng.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:photo_view/photo_view.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  //WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -51,7 +52,7 @@ class _RecipeViewState extends State<RecipeView> {
     //for (var item in fetchedData) {
     //_recipeList.add(Recipe.convertJson(item));
     //}
-
+    //_fullList.addAll(Recipe.fetchRecipes());
     await loadRecipes();
     //loadToFB(_fullList);
     _selectFour();
@@ -59,28 +60,26 @@ class _RecipeViewState extends State<RecipeView> {
 
   Future<void> loadRecipes() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    db
-        .collection("recipes")
-        .doc('08C60Ww7RIthTZDS4BY3')
-        .get()
-        .then((value) => {
-              print(Recipe(
-                      name: value['name'],
-                      description: value['description'],
-                      imagePath: value['imagePath'])
-                  .name)
-            })
-        /* .then((value) => {
-              for (var item in value.docs)
-                {
-                  print(item.toString()),
-                  _fullList.add(Recipe(
-                      name: item['name'],
-                      description: item['description'],
-                      imagePath: item['imagePath']))
-                },
-            }) */
-        .catchError((onError) => print(onError));
+    try {
+      QuerySnapshot query = await db.collection("recipes").get();
+      List<dynamic> result = query.docs.map((doc) => doc.data()).toList();
+      log("items fetched from FB ${result.length}");
+      if (_fullList.isNotEmpty) {
+        _fullList.clear();
+      }
+      for (var item in result) {
+        Recipe r = Recipe(
+            name: item['name'],
+            description: item['description'],
+            imagePath: item['imagePath']);
+        _fullList.add(r);
+      }
+    } catch (error) {
+      log("error occured");
+      _fullList.addAll(Recipe.fetchRecipes());
+    }
+
+    log("items in the List ${_fullList.length}");
   }
 
   Future<void> startFB() async {
@@ -103,6 +102,11 @@ class _RecipeViewState extends State<RecipeView> {
           .then((value) => print("done"))
           .catchError((onError) => print(onError));
     }
+  }
+
+  void _loadInternal() {
+    _fullList.addAll(Recipe.fetchRecipes());
+    _selectFour();
   }
 
   void _selectFour() {
@@ -139,9 +143,11 @@ class _RecipeViewState extends State<RecipeView> {
           padding: const EdgeInsets.all(16.0),
           itemBuilder: (context, i) {
             if (i.isOdd) return const Divider();
-
             if (_recipeList.isEmpty) {
               _getRecipes();
+              if (_recipeList.isEmpty) {
+                _loadInternal();
+              }
             }
 
             final index = i ~/ 2;
@@ -160,19 +166,38 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   void _openRecipe(Recipe choice) {
-    Navigator.of(this.context).push(
+    Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) {
           return Scaffold(
               appBar: AppBar(
                 title: Text(choice.name!),
               ),
-              body: Container(
-                padding: const EdgeInsets.all(25.0),
-                child: Text(
-                  choice.description!,
-                  style: _biggerFont,
-                ),
+              body: SingleChildScrollView(
+                child: Container(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Column(
+                      children: [
+                        InteractiveViewer(
+                            boundaryMargin: const EdgeInsets.all(25.0),
+                            minScale: 0.1,
+                            maxScale: 1.5,
+                            child: Image.asset(
+                              choice.imagePath!,
+                              height: 300,
+                              width: 300,
+                            )),
+                        /* Image.asset(
+                          choice.imagePath!,
+                          height: 300,
+                          width: 300,
+                        ), */
+                        Text(
+                          choice.description!,
+                          style: _biggerFont,
+                        ),
+                      ],
+                    )),
               ));
         },
       ),

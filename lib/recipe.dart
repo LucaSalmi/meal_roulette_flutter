@@ -36,12 +36,12 @@ class Recipe {
           name: 'Ice Cream', description: loremIpsum, imagePath: imageAdress),
       Recipe(
           name: 'Meatballs', description: loremIpsum, imagePath: imageAdress),
-      Recipe(name: 'Goulash', description: loremIpsum, imagePath: imageAdress),
+/*       Recipe(name: 'Goulash', description: loremIpsum, imagePath: imageAdress),
       Recipe(name: 'Rice', description: loremIpsum, imagePath: imageAdress),
       Recipe(name: 'Sushi', description: loremIpsum, imagePath: imageAdress),
       Recipe(name: 'Sallad', description: loremIpsum, imagePath: imageAdress),
       Recipe(name: 'Pizza', description: loremIpsum, imagePath: imageAdress),
-      Recipe(name: 'Curry', description: loremIpsum, imagePath: imageAdress),
+      Recipe(name: 'Curry', description: loremIpsum, imagePath: imageAdress), */
     ];
     return recipeList;
   }
